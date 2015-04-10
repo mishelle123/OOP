@@ -1,0 +1,117 @@
+jjgold
+mishelle
+
+File Description:
+main
+1. Sjavac - scans the file, separates the lines and store them in ArrayList.
+2. Parser - performs the initial parsing. Runs over the different lines and check 
+			each one of them by comparing them to the regex.
+3. IlligalFinalException
+4. IlligalMethodNameException
+5. InvalidAssignmentException
+6. InvalidLineException
+7. MissingBooleanException
+8. NoReturnStatementException
+variables
+9.  Variable - an abstract class. Performs all the operation relevant to Variable object.
+10. variableFactory - validate the variable's name according to the requirements and creates 
+	new variable.
+11. BooleanVariable - represents a 'boolean' variable.
+12. CharVariable - represents a 'char' variable.
+13. DoubleVariable - represents a 'double' variable.
+14. IntVariable - represents an 'int' variable.
+15. StringVariable - represents a 'String' variable.
+16. IlligalVariableException.
+17. IlligalVariableNameException
+methods
+18. Method - includes all the operation that relevant to a Method object.
+19. MethodFactory - create the method. Also sets the parameters initialization state.
+toolbox
+20. toolbox - contains helper methods, that relevant to different modules.
+21. MissingBracketException 
+
+Design:
+Our design includes four major modules: main module, variables module, methods module and toolbox.
+We chose to implement the variables module in abstract class that all the variables type extend. 
+We chose this way because 'Variable' has methods and parameters which relevant to all variables 
+and they are different only by type. 
+This implementation allows us to add new variables to the program without making to many changes 
+in the existing code.
+The Method module composed from two classes: 'method' class and 'MethodFactory' each method class
+contains its name and a list of variables which are relevant to this method. 
+The main module has the 'Sjavac' class that contains the main method and the 'Parser' that responsible
+for analyzing the input.
+The toolbox module has few static methods.   
+
+Implementation Issues:
+The 'Sjavac' file contains the main part of the program. It scans the file, separates the lines and 
+store them in ArrayList. After that the parsing part is performed. 
+The 'Parser' executes the initial parsing and the method parsing. 
+The initial parsing creates the members variables and the methods according to the input. 
+The method parsing checks the lines in the methods block and if it encounter an 'if\while' block
+we recursively checks the lines in the inner block. Each call receives a list of variables relevant
+to this block.     
+A line is checked by matching it to regular expressions. Each regular expression checks whether 
+the line describes:
+empty line, comment, variable declaration, variable initialization, assignment, creating a method, calling
+a method,return statement, if/ while statement ec'. 
+If the line is a variable declaration we send the values to 'variableFactory'  which creates the variables, 
+according to 'Sjavac' rules. 
+If the line is method creation we send the values to 'MethodFactory' which creates a new method. 
+The idea is to check all the lines which are located in the outer block. 
+After validate the correctness of this of lines we continue to the inner blocks (can be a method,
+an if/ while block, method who calls itself..). If a line matches the Sjava rules we continue to the
+next line. Otherwise we throw an exception describing the problem and change the exit value to 1.
+We recursively check the property of the inner blocks and return exitValue 0 if the code compiles. 
+
+helper methods:
+Parser
+o initialParsing - runs over the input array and checks the lines.
+o methodParsing - a method that checks each method using the recursive parsing
+o recursiveParsing - checks each block recursively 
+o checkMethodCall - checks if a line is a method call
+o checkReturn - checks if the line is 'return'
+o checkEmptyLine - checks if the line is empty
+o checkIfWhileLine - checks if the line is if condition/ while loop
+o checkAssignmentLine - checks if the line is an assignment line
+o checkMethod - checks if the line is a method
+o checkComment - checks if the line is a comment
+o checkVariable - checks if the line is variable declaration
+toolbox
+o checkInitialization - checks if the variable has been initialize correctly
+o countBlockBracket - returns the matching bracket in the input
+
+Answers to Questions:
+o Error Handling
+We decided to use the exceptions mechanism to handle general errors of our program. Every module
+contains its exceptions and throw it in the relevant place. This way of error handling enables 
+information about the problem and throws informative exception describing the problem.
+An exception maybe thrown in many stages of the code but it will be caught in the 'parse' method.
+o Object Oriented Design
+Our program follows the object oriented programming principles studied in class.  
+Each part has its responsibilities: 
+-the variable module responsibility is to create the variables according to the declaration, to check
+its type and its value.
+- the method module responsibility is creating the method and hold its name and its variables.
+-the main is responsible on the parse part. Its scans the file and checks each one of the lines.
+-the toolbox module holds useful methods which are called by different modules. 
+o How would you modify your code to add new types of variables
+Our program contains abstract class 'Variable' that have methods which fits all the variables such
+as 'checkFinalise()', 'checkInitialize()' and all the variables extends these class. If we want to
+add new types of variables we create new class that extends 'Variable' with the new variable name
+and just build its constructor. All the other parameters will be given by the parent class.
+Also in the 'VariableFactory' we will add another case with the new variable type to the variable
+creation.
+o For loops
+In order to add for loops we should create new methods called 'checkFor' who checks according
+to regular expressions and to boolean expression the validity of the for. Than we have to 
+add it to the InitialParsing(), and methodParsing() methods, so this line wont be treated as
+invalid code. A for loop may also create a new variable: "for(int i = 0; i< ...)" i is a variable.  
+o Regular Expressions 
+The two main expressions you used in our code are: 
+1. VARIABLES_NAME = "[a-zA-Z]\\w*+|_\\w+" 
+this regex relevant while defining variables and creating methods.
+2. BOOLEAN_RE = "\\s*+(true|false|-?\\s*+[.]\\d++|\\d++[.]\\d*+|\\d++)\\s*+" 
+this regex is used when checking the validity of boolean variables, and when checking the if\while
+condition.  
+

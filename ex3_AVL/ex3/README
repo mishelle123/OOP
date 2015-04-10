@@ -1,0 +1,97 @@
+mishelle
+
+File Description:
+1. AVLNode - Constructs a single node in the tree
+2. AvlTree - Creates an AVL tree: self-balancing binary search tree.
+
+Design:
+I chose to implement two classes: AVLNode, AVLTree. 
+AVLNode construct a single node in the tree. Its responsible of changing the node data, 
+the node right son, the node left son, and returns the node's parameters.  
+AvlTree represent self-balancing binary search tree. This class responsibility is to build the tree 
+and to balance it in each operation. I didn't create another classes because the helper methods 
+don't represent a different object. Therefore in this design the private helper methods are located 
+in AvlTree class.    
+
+Implementation Issues:
+AVL tree is self- balancing BST. It contains four main methods:
+o  contains: checks if the value exist in the tree.
+
+o  size: returns the size of the tree.
+
+o  add: adds a new node to the tree.
+	 The add method first calls the contains method and checks if the value is already exist in the tree and 
+	 returns false if it is. If the value is not in the tree it calls to 'simpleInsert' helper method. 
+	 This method gets new AVL node and recursively traverse over the tree and by comparing the values. 
+	 It locates the new node and calls 'checkBalance' helper method. 'checkBalance' traverse the tree beginning 
+	 from the inserted node, up to the root. It computes the difference between the left sub-tree to the right sub-tree 
+	 of the inserted node. If the difference is 2 or -2 its perform the suitable rotates. There are four rotation
+	 methods: 'singleLeftRotate' - rotates the violation vertex to the right, 'doubleLeftRotate'- rotates to the left 
+	 the left son of  the violation vertex and than rotates to the right the violation vertex itself, 
+	 'singleRightRotate' - rotates the violation vertex to the left, 'doubleRightRotate'- rotates to the right the right 
+	 son of the violation vertex and than rotates the violation vertex to the left. After that the 'insert' operation 
+	 ends and returns true.
+ 
+o  delete: removes a node from the tree.
+	The delete method first calls the 'contains' method and checks if the value exists in the tree. If not it returners 
+	false. Otherwise it calls to 'findToDelete' helper method. This method traverse over the tree, finds the wanted 
+	node to be deleted and calls to 'removeNode' method. 'removeNode' removes the node from the tree by changing the 
+	references according to the algorithm we learned in the "data structures" course. If the node we want to delete has 
+	no children we remove it, if it has one child we connect between the node's parent to the node's son. And if it 
+	has two children we call the 'successor' method and replace the node with its successor. The 'successor' method gets 
+	a node and returns the next node in the tree (by value). It check 3 cases:  the successor is the minimum of the right 
+	sub-tree, the successor is the maximal node in the tree, or the successor is the lowest ancestor of x that has x 
+	in his left sub-tree. 
+	After the node is deleted the 'removeNode' method calls to 'check balance' method which check if there is a 
+	violation in one of the vertex. As I described earlier 'checkBalance' computes the difference between the left 
+	sub-tree to the right sub-tree of the parent of the deleted node.  If the difference is 2 or -2 its perform the 
+	suitable rotates: LL, LR, RR, RL by calling to the rotation methods: 
+	'singleLeftRotate', 'doubleLeftRotate', 'singleRightRotate', 'doubleRightRotate'. 
+	After that the 'delete' method returns true.
+
+helper methods:
+o recursiveContains - search for the value recursively
+o simpleInsert - insert new node to the tree and check the balance
+o checkBalance - checks the tree balance recursively
+o setNodeHeight - Calculating the height of a node.
+o findToDelete - finds the node should be deleted
+o removeNode -  remove the node from the tree, consider the different cases: the node has 2/1/0 children
+o max - find the max between two sub-trees
+o singleRightRotate - RR rotate : rotate to the left
+o singleLeftRotate - LL rotate : rotate to the right
+o doubleLeftRotate - LR rotate : rotate to the left and than to the right
+o oubleRightRotate - RL rotate : rotate to the right and than to the left
+
+The methods are based on regular BST implementation except the balance part. 
+In this implementation I used BST traversal, updated the heights and than checked the balance by comparing between 
+the left sub-tree to the rights sub-tree. If violation is found the suitable rotate is perform 
+(there are four different rotates: RR, LL, RL, LR).  
+
+
+Answers to Questions:
+A series of 20 numbers, such that when they are inserted into an empty AVL treenone-by-one, 
+the result is a tree where the left sub-tree of the root has 15 nodes, while the right sub-tree of 
+the root has only 4 nodes:
+{40, 30, 90, 20, 35, 70, 110, 10, 50, 80, 100, 120, 45, 66, 75, 84, 95,105, 115, 125}.
+	               40                               
+	              /  \               
+	             /    \              
+	            /      \             
+	           /        \             
+	          /          \           
+	         /            \          
+	        /              \         
+	       /                \        
+     	  30                 90               
+     	 / \     	       /   \       
+     	/   \             /     \      
+  	   /     \           /       \     
+      /       \         /         \    
+     20       35       70          110       
+  	/  		          /  \  	   /  \   
+   /   		         /    \       /    \  
+  10                50    80     100   120   
+                   /  \  /  \   /  \   / \ 
+                  45 66 75  84 95 105 115 125 
+
+   

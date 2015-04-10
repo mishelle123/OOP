@@ -1,0 +1,105 @@
+jjgold
+mishelle
+
+File Description:
+crosswords
+1. Crossword
+2. CrosswordDictionary
+3. CrosswordEntry
+4. CrosswordPosition
+5. CrosswordStructure
+6. MyCrossword
+7. MyCrosswordDictionary
+8. MyCrosswordEntry
+9. MyCrosswordPosition
+10. MyCrosswordStructure
+11. MyDictionaryCopmerator
+12. MyIterator
+13. MySquare
+gui
+14. crosswordViewer
+search
+15. BoardMove
+16. DepthFirstSearch
+17. MyDepthFirstSearch
+18. SearchBoard
+searchSamples
+19. HorseBoard
+20. HorseMove
+21. HorsePuzzle
+
+
+Design: 
+MyDepthFirstSearch - has a method 'performSearch'. 'performSearch' receives a 'SearchBoard' and 
+iterates the different possible continuations (BoardMoves) according to DFS. 
+
+MyCrossoword - implements 'Crossword' which extends 'SearchBoard'. MyCrossowrds holds 4 data structures: 
+* terms - which holds all the words in the dictionary
+* board - that represents the crossword board. Our board is two dimensional array of 'MySquare' object.
+* entries - holds the entries than can be filled. (not a frame)
+* movesRecord - holds the moves. The current state of the board.
+
+MyCrosswordEntry - implements 'CrosswordEntry' which extends 'BoardMove'. 
+Represents a slot at a given position in a crossword
+and holds all its characteristics(length, position, term..). 
+
+MyIterator - implements Iterator. Receives the board, the entries, and the terms. Attaches term to entry, 
+checks on the board if it fits and iterates all the ones that does fit.
+
+MySquare - uses by 'MyCrossword'. Represents a square in the board: holds the char and the 
+number of times the square is used on the board.
+
+
+ Implementation Issues:
+* 'MyDepthFirstSearch' represents a graph of SerachBordes and each SearchBoard sons are 
+   SearchBoards with one more move on them.
+   The maxDepth parameter is the maximal height of the graph and the timeOut is the time limit on the runTime. 
+   Each edge in the graph is a recursive call with the next SearchBoard and lower depth.
+* 'MyIterator' iterating is performed by passing over the entries, and for each entry checks all the terms that 
+   may be fit. This according to the suggested optimization.
+* 'MyPosition' Specifies a basic position of an entry in a crossword. A position has X, Y cordinates and 
+   direction.
+*  As describes earlier 'MyCrossowrd' holds different data structures. 
+   One of them is a TreeSet which contains the terms according to the 'MyDictionaryComperator'. 
+   'MyDictionaryComperator' compares the terms first by their length and than by alphabetically. 
+   The entries also represented by TreeSet. In order to compare by two entries we used compareTo method. 
+   Therefore 'MyCrosswordEntry' implements Comparable according to the given optimization. 
+   The methods: 'doMove' and 'undoMove' update the board according to the given moves. For example: 'doMove' 
+   updates the number of uses for each square. Adds the move to the 'movesRecords' list, removes 
+   the used entry from the 'entries' TreeSet and the used term from the 'terms' TreeSet. 'undoMove' does the 
+   opposite operations. 
+   The 'getQualityBound' method etarates the remaining words and checks possible placement for each word. 
+   If the word can be placed in the board we add its length to the quality bound and return the sum of the 
+   current quality with the quality bound.
+   'attachStructure' method create the 'MySquare 'board according to the CrosswordStructure size and 
+   content. After that it creates all the entries in the board.
+   'checkEntry' is a ststic public helper method. We also use this method in the 'MyIterator' class. 
+   Its checks if the term can fit the entry and than checks if the word can fit the board.
+   
+ Answers to Questions:
+  OOP
+  1. In order to add aditional optimization we should change the entries\ terms comparators and perhapse change 
+  the iterator as well (this chang is easy to make because the comparators and iterator are in separate classes). 
+  In order to change the quality bound we need to change the quality bound method. 
+  2. In order to change the scoring method its possible to write a method that recieves a term and for each letter
+  in the term it adds different score to the quality. This could be done by a switch case for each char.
+  complexity of the DFS search
+  E = number of board entries
+  T = number of terms
+  the root of the DFS tree has O(E*T) sons end each son has O((E-1)*(T-1)) sons ans do on..
+  So for node x in the tree with depth of d the numbers of son is O((E-d)*(T-d)). 
+  The DFS algorithm pass over each edge in the graph exactly twice - if the number of nodes is n the number of edges 
+  in a tree is n-1 so DFS algorithm complexity is O(n). when n is the number of nodes. The algorithm stops when the
+  numbers of terms is 0 or the number of entries is 0. Assume T < E the cmplexity is O(T*(E!)*(T!)).
+    
+   
+   
+    
+   
+
+ 
+ 
+
+   
+					
+

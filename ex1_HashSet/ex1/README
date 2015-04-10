@@ -1,0 +1,281 @@
+mishelle
+
+File Description:
+
+data_structures
+1. MyHashSet.java - This class offers constant time performance for the basic operations 
+   (add, delete, contains), assuming the hash function disperses the elements properly among the buckets.
+analysis
+2. MyAnalysis.java - Analyzes the time complexity of iterating over the elements in a HashSet in terms of capacity and 
+   number of elements. And compare the performance of three different data structures.
+3. HelperMethods - contains methods that compute the run time that is needed for each operation. There are
+   different methods for every data structure. This in order to avoid code repetition.   
+4. Ex1Utils.java - In order to have the content of the data files as Java objects, there is a 
+   method that reads a content of a text file and returns a String[] with that content.
+5. README - This file. describe all of the relevant information about the design and implementation decisions. 
+
+
+Design:
+
+Helper Methods:
+1. hash- gets a String, and returns an index in an array.
+2. loadFactorMode - checks the status of the current load factor:
+   *  returns 1 if the load factor is higher than the upper load factor.
+   *  returns -1 if the load factor is lower than the lower load factor.
+   *  returns 0 if lowerLoadFactor< loadFactor < upperLoadFactor.
+3. addWithoutResize - adds an element to the array without changing the array size.
+4. resize - change the size of the array according to the load factor status.
+   Checks the loadFactor mode, than copy bucket's values to temp array and expand/ reduces bucket's length.
+   Passes over the temp array and creates new array - including every item in all the lists that were 
+   in the old buckets array. Than adds the values to buckets.
+
+The implementation of the methods add(), contains() and delete():
+1. ADD
+   This operation start with computing the hash code of the searched value by using the hash function.
+   This is the position in which we need to add the new value. If this position is null  there is a new
+   LinkedList created in this cell. In case this cell is not null we check if the linked list in this cell
+   already contains the searched value. If it does  we return false, else we add the value to the list by 
+   using the 'add' operation of LinkedList. 
+   In the end we use the 'loadFactorMode' helper method and if the value > 0 we enlarge the array size by using
+   'resize' helper method.
+2. CONTAINS 
+   This operation also start with computing the hash code of the searched value by using the hash function.
+   Than checks - if the list is null return false, else uses the LinkedList 'contains' operation.
+3. DELETE	
+    Finds the position in the array by using the 'hash' helper method. Checks whether the list is null or
+    whether this value is not in the array - in such case return false.
+    Else it uses the LinkedList 'remove' operation.
+
+Implementation Issues:
+
+1. The helper method purpose is to deal with different problems. In the case of 'loadFactoreMode' it is a quick way
+   to now the situation of the load factor. And in case of 'addWithoutResize' is to avoid a situation in which
+   the 'add' method calls the resize method and the 'resize' method call the add method.
+2. I built another class called 'HelperMethode'. This class contains methods that compute the run time that 
+   is needed for each operation. There are different methods for every data structure. 
+   This in order to avoid code repetition. 
+
+Answers to Questions:
+
+analysis
+a. 
+I. analyzing  MyHashSet complexity when the size is larger than the capacity 
+	(i)  ADD - data1
+		 *the time required to add data1 to the default set in milliseconds Is 40757
+		 *ADD perform the 'hash' operation o(1), if null create new list o(1) (in the case
+		 of data 1 only one list is created), perform the contain operation o(n) and than 
+		 resize the array. The resize is done by creating lists o(1). Pass over the elements, 
+		 uses the 'to Array' function o(n) and than pass over the elements of the new array in 
+		 order to add them to the buckets array.    
+		 complexity O(n^2) because the resize operation is not called every time we add an element to the
+		 array.
+	(ii) ADD - data 2 
+		 *the time required to add data2 to the default set in milliseconds is 42
+		 *Since in data2 the elements are mapped of different cells each of the operation  takes less time.
+		 The 'hash' function returns the position and then the 'contain' function passes over less elements. 
+		 This complexity in average is O(1). The function that increase the time is the resize that enlarge 
+		 the buckets array by passing over all the array.
+		 The complexity is O(n) - because each of the LinkedList has few elements.
+	(i)  CONTAINS - data1
+		 *the time required to find a value in data1 in milliseconds Is 0
+	 	 *In data1 all the elements are in the same cell. The contains operation passes over all the elements
+	 	 and compares the searched value to each element in the list. The complexity is O(n).
+	 	 In this case the value probably was in the beginning of the array so the runtime was very fast.
+	(ii) CONTAINS - data2
+	     *the time required to find a value in data2 in milliseconds Is 0
+		 *In data2 the elements are mapped to different cells. The 'contains' operation uses the 'hash' 
+	     function to get the position. Than passes over the list (which have only a few elements) 
+	     and compares the elements to the searched value. The average complexity is O(1).
+	(i)  DELETE - data1 	
+		 *the time required to to delete a value from data1 in milliseconds Is 0
+	     The 'delete' operation checks if the value is in the array using contains O(n), or if the cell 
+	     is null O(1). Than remove the value from the array O(n). Since the size is larger than the capacity
+	     the 'resize' function is not called for removing one element. Therefore the complexity is O(n).
+	     In this case the value probably was in the beginning of the array so the runtime was very fast.
+	(ii) DELETE - data2
+		*the time required to delete a value from data2 in milliseconds Is 0
+		 Again in data2 the elements are scattered. Because of this the 'contain' average complexity is O(1)
+		 and the 'remove' average complexity is O(1). The complexity is O(1).
+	
+	II. analyzing  MyHashSet complexity when the capacity is larger than the size - data1     	
+	(i)  ADD - data1
+		 *the time required to add data1 to MyHashSet with large capacity in milliseconds Is 30
+	 	 Since all the values are mapped to the same cell we still need to pass over all the elements in the
+	 	 'contain' operation. The difference is by not calling the 'resize' function and therefore the 
+	 	 complexity is O(n).
+	(ii) ADD - data2
+         *the time required to add data2 to MyHashSet with large capacity in milliseconds Is 3
+	 	 Again as before complexity O(1).
+	(i)  CONTAINS - data1	 
+		 *the time required to find a value in data1 with large capacity in milliseconds Is 0
+	 	 * This function doen't call the 'resize' method. The complexity stays O(n).
+	(ii) CONTAINS - data2
+		 * the time required to find a value in data2 with large capacity in milliseconds Is 0
+		 * This function doen't call the 'resize' method. The complexity stays O(1).	   
+	(i)  DELETE - data1
+		 *the time required to to delete a value from data1 in milliseconds Is 0
+		 *As before the complexity is O(n)
+	(ii) DELETE - data2	 	    
+		 *the time required to to delete a value from data2 in milliseconds Is 487
+	 	 *As before the complexity is O(1)
+ 	
+b.  Compare the performance of three different data structures.
+1) *********add**************
+
+I. comparison between the times required for this operation for the different data structures
+(i) data 1
+	* LinkedList - the time required in milliseconds is 22
+	* TreeSet - the time required in milliseconds is 47
+	* MyHashSet - the time required in milliseconds is 42258
+	1. As we can see the LinkedList data structure performs the 'add' operation in the lowest time.
+	   this consistent with the expectations because LinkedList dosen't just have to pass over the
+	   values (this in case it adds the value to the end of the list) and to add it in the end 
+	   complexity - O(n). In case the value is added to the beginning of the list the complexity is O(1).
+	2. The second data_structure to perform the 'add' operation is  TreeSet.
+	   This because the values in binary search tree must be organize by there size. So this 
+	   Operation takes longer time than LinkedList which just adds the values without sorting them.
+	   again this fits the expectations. The average complexity is O(logn). (worst case O(n)).
+	3. The last data structure to perform this function is the MyHasSet. This because data 1 contains a list 
+	   of words which have the same hash code, therefore all of them are mapped to the same cell.
+	   HashSet's 'add' take the longest time because before adding the element to the cells its computing the
+	   hash code of every one of the values O(1), and perform the contain operation on every value in complexity 
+	   O(n). Again like I expected.
+ (ii) data 2
+	* LinkedList - the time required in milliseconds is 8
+	* MyHashSet - the time required in milliseconds is 41
+	* TreeSet - the time required in milliseconds is 46
+	 1. LinkedList performs the operation in the lowest time because it only needs to add the values to the
+	 	list without performing something else. If it adds to the end of the list the complexity is O(n) and if  
+	 	it adds to the beginning of the list the complexity is 	O(1).
+	 2. MyHashSet is the second to perform this operation. This because the values of data2 are mapped to 
+	 	different cells. The operations are hash O(1) add to linkedList O(1) and contain O(n).
+	 	But every cell has only a few elements. Therefore the average complexity is O(1).
+	 3. TreeSet -  It has to sort the values, therefore the complexity is O(logn).
+	  
+ 	
+II. Comparison between the times required for the operation between the two data files.
+ (i) LinkedList
+ 	* data 1 - the time required in milliseconds is 22
+ 	* data 2 - the time required in milliseconds is 8 
+ 	Adding data1 content to the array is almost like adding data2 content to the array. But there is still
+ 	a small change between the two files. I didn't predicted this because LinkedList adds the values to the 
+ 	array without consideration in the order and the hash code.
+ (ii) TreeSet
+   * data 1 - the time required in milliseconds is 47 
+   * data 2 - the time required in milliseconds is 46
+   Again we can see that adding data2 content to the array takes less time than adding data1.I didn't expect to 
+   see a significant difference but there is a small change in time.
+ (iii) MyHashSet
+   * data 1 - the time required in milliseconds is 42258 
+   * data 2 - the time required in milliseconds is 41
+   Adding data2 takes less time than adding data1 but this time I expected this change. This thanks to the fact
+   that in data1 MyHashSet adds all the string values to the same cell in the array and therefore runs the 'contain' 
+   function over and over again for every new value. contain complexity O(n) and that is why the time in milliseconds
+   is higher.  
+   On the other hand data2 content is not mapped to the same cell. Therefore each call to the 'contain' function
+   passes over less arguments and the runtime is lower. Average complexity O(1).
+   
+
+2) ********contain*************
+
+  in data structures that are initialized by data1’s content. 
+ I.  For the same word - comparison between the different data structure separately
+	(i) looking for the string “-13170890158” 
+ 	* LinkedList - the time required in milliseconds is 1
+ 	* TreeSet - the time required in milliseconds is 0
+ 	* MyHashSet - the time required in milliseconds is 1
+ 	I didn't expect to see a significant difference between the data structures because : 
+ 	1. The LinkedList data structure performs the 'contain' operation by passing over all the elements in the list, 
+ 		and by comparing the searched value to each of the node's values. Therefore the complexity is O(n).
+ 	2. The TreeSet data structure performs the 'contain' operation by comparing the searched value to the root
+ 		value, and by going left or right in the subtree according to the comparison (left for smaller value 
+ 		and right for larger). Therefore the complexity is O(logn).
+ 	3. MyHashSet performs the 'contain' operation by using the hash function in order to get the position in the 
+ 	   array. After that it goes to this position and passes over all the String values by using LinkesList 
+ 	   'contain' operation. We are using data1 in this comparison so all the values are mapped to the same cell
+ 	   and the complexity should be almost the same as LinkedList O(n). 
+   (ii)  looking for the string “hi” 
+	* LinkedList - the time required in milliseconds is 1
+ 	* TreeSet - the time required in milliseconds is 0
+ 	* MyHashSet - the time required in milliseconds is 0
+ 	As before I didn't expect to see a significant difference between the data structures. That because we are using
+ 	data1 file in which all the values are mapped in same cell. 
+ 	Again the operations are the same as i explained in section (i) except MyHashSet because "hi" appears in
+ 	a different position.   
+ 				
+ II. For each data structure separately - comparing the times between the two words
+ 	word 1 = "hi"
+ 	word 2 = “-13170890158”
+ 	(i) LinkedList
+ 	* word 1 - the time required in milliseconds is 1
+ 	* word 2 - the time required in milliseconds is 1 
+	Searching the strings: "hi" and “-13170890158” performs the same operations. Therefore the time in millisecond 
+	is equal.
+ (ii) TreeSet
+   * word 1 - the time required in milliseconds is 0 
+   * word 2 - the time required in milliseconds is 0
+   Searching the strings: "hi" and “-13170890158” performs the same operations. Therefore the time in millisecond 
+	is equal.
+ (iii) MyHashSet
+   * word 1 - the time required in milliseconds is 1 
+   * word 2 - the time required in milliseconds is 0
+   Searching the strings: "hi" and “-13170890158” performs the same operations but the word "hi" has different
+   position, therefore the time needed searching for the second word is lower.  
+
+3) ********contain*************
+
+in data structures that are initialized by data2’s content. 
+I.  For the same word - comparison between the different data structure separately
+  (i) looking for the string “23” 
+ 	* LinkedList - the time required in milliseconds is 0
+ 	* TreeSet - the time required in milliseconds is 0
+ 	* MyHashSet - the time required in milliseconds is 0
+ 	I expected to see a slight difference between MyHashSet to the other data structures but there was no change.
+ 	1. The LinkedList data structure performs the 'contain' operation by passing over all the elements in the list, 
+ 		and by comparing the searched value to each of the node's values. Therefore the complexity is O(n).
+ 	2. The TreeSet data structure performs the 'contain' operation by comparing the searched value to the root
+ 		value, and by going left or right in the subtree according to the comparison (left for smaller value 
+ 		and right for larger). Therefore the complexity is O(logn).
+ 	3. MyHashSet performs the 'contain' operation by using the hash function in order to get the position in the 
+ 	   array. After that it goes to this position and passes over all the String values by using LinkesList 
+ 	   'contain' operation. We are using data2 in this comparison so the values are mapped in different cells. 
+ 	   We also know that "23" exists in the set so the complexity is O(1).
+  (ii) looking for the string “hi” 
+	* LinkedList - the time required in milliseconds is 1
+ 	* TreeSet - the time required in milliseconds is 0
+ 	* MyHashSet - the time required in milliseconds is 0
+ 	As before I expected to see a slight difference between the data structures. That because we are searching the 
+ 	word "hi" that doesn't exist in the data. This means that the TreeSet and MyHashSet should perform the operation 
+ 	faster than LinkedList. The result was as I expected.
+ 	1. The operation is done as before.
+ 	2. Since he word "hi" is not in the array and the 'contain' complexity is O(logn) in the worst case its should
+ 	   run faster than the LinkedList. 
+ 	3. As I explained before MyHashSet average complexity (using data2) is O(1) so it should perform this operation
+ 	   in minimal time.
+ 
+ II. For each data structure separately - comparing the times between the two words
+ 	word 1 = "23"
+ 	word 2 = “hi”
+ 	(i) LinkedList
+ 	* word 1 - the time required in milliseconds is 0
+ 	* word 2 - the time required in milliseconds is 1 
+	Searching String "23" is faster than searching “hi”, since “hi” does not exist in the data, “23” exists.
+	That mean that in order to find "23" we need to pass over part of the list (this if the string is not 
+	in the end of the list) whereas in order to find out that "hi" is not in the list we pass over all the list's
+	elements. 
+ (ii) TreeSet
+   * word 1 - the time required in milliseconds is 0 
+   * word 2 - the time required in milliseconds is 0
+   Searching the strings: "23" and “hi” performs the same operations. Even though "23" exits and "hi" is not exists 
+   in the tree.  Therefore the time in millisecond is equal.
+ (iii) MyHashSet
+   * word 1 - the time required in milliseconds is 0 
+   * word 2 - the time required in milliseconds is 0
+   Searching the strings:  "23" and “hi” performs the same operations. Even though "23" exits and "hi" is not exists 
+   in the set. The hash function return the position in the set and we need to check in the LinkedList if the String 
+   weather the string exists.  	   
+
+Source files:    
+data1.txt
+data2.txt
+   
